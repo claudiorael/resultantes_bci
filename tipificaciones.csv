@@ -1,0 +1,150 @@
+COD_VICIDIAL;Calif_1;Calif_2;Calif_3;concatenado;Estado;Peso
+1NC4FS;No conecta;Fuera de Servicio;;No conectaFuera de Servicio;;12
+2C14FH;Conecta - efectivo - Cliente;Fuera horario;;Conecta - efectivo - ClienteFuera horario;;72
+2E2FH;Conecta - efectivo - Cliente;Fuera horario;;Conecta - efectivo - ClienteFuera horario;Terminado;72
+2C1VE;Conecta - efectivo - Cliente;Interesa;Venta;Conecta - efectivo - ClienteInteresaVenta;;100
+1NC4FS;No conecta;Fuera de Servicio;;No conectaFuera de Servicio;;12
+2C2VR;Conecta - efectivo - Cliente;Interesa;Venta Referido;Conecta - efectivo - ClienteInteresaVenta Referido;;99
+2C62LP;Conecta - Efectivo - Cliente;Link De Pago Enviado;;Conecta - Efectivo - ClienteLink De Pago Enviado;;99
+2C13LP;Conecta - efectivo - Cliente;Lo pensará;;Conecta - efectivo - ClienteLo pensará;;74
+2C63AG;Conecta - efectivo - Cliente;Lo pensará;;Conecta - efectivo - ClienteLo pensará;;74
+2C11FP;Conecta - efectivo - Cliente;No Interesa;Fuera del País;Conecta - efectivo - ClienteNo InteresaFuera del País;;78
+2C12CC;Conecta - efectivo - Cliente;No Interesa;Cliente cerrará cuenta;Conecta - efectivo - ClienteNo InteresaCliente cerrará cuenta;;76
+2C36VA;Conecta - Efectivo - Cliente;No Interesa;Vendio Auto;Conecta - Efectivo - ClienteNo InteresaVendio Auto;;74
+2C37RC;Conecta - Efectivo - Cliente;No Interesa;Rechaza Costo Elevado;Conecta - Efectivo - ClienteNo InteresaRechaza Costo Elevado;;82
+2C3ME;Conecta - efectivo - Cliente;No Interesa;Mala experiencia con Compañía/Banco/Corredora;Conecta - efectivo - ClienteNo InteresaMala experiencia con Compañía/Banco/Corredora;;96
+2C10PE;Conecta - efectivo - Cliente;No Interesa;Problemas económicos;Conecta - efectivo - ClienteNo InteresaProblemas económicos;;82
+2C6NI;Conecta - efectivo - Cliente;No Interesa;No interesa seguro;Conecta - efectivo - ClienteNo InteresaNo interesa seguro;;90
+2C7CS;Conecta - efectivo - Cliente;No Interesa;Desea contratar en sucursal;Conecta - efectivo - ClienteNo InteresaDesea contratar en sucursal;;88
+2C8NG;Conecta - efectivo - Cliente;No Interesa;No le gusta venta telefónica;Conecta - efectivo - ClienteNo InteresaNo le gusta venta telefónica;;86
+2C9CM;Conecta - efectivo - Cliente;No Interesa;Cliente molesto (No volver a llamar);Conecta - efectivo - ClienteNo InteresaCliente molesto (No volver a llamar);;84
+2C59NA;Conecta - Efectivo - Cliente;No Interesa;Vehiculo No Asegurable;Conecta - Efectivo - ClienteNo InteresaVehiculo No Asegurable;;74
+2C57MO;Conecta - Efectivo - Cliente;No Interesa;Tiene Mejor Oferta;Conecta - Efectivo - ClienteNo InteresaTiene Mejor Oferta;;94
+2C53NA;Conecta - Efectivo - Cliente;No Interesa;No Tiene Auto;Conecta - Efectivo - ClienteNo InteresaNo Tiene Auto;;74
+2C54MP;Conecta - Efectivo - Cliente;No Interesa;Medio De Pago;Conecta - Efectivo - ClienteNo InteresaMedio De Pago;;85
+2C55VA;Conecta - Efectivo - Cliente;No Interesa;Vendio Auto;Conecta - Efectivo - ClienteNo InteresaVendio Auto;;74
+2C58EC;Conecta - Efectivo - Cliente;No Interesa;Error En Cotizacion;Conecta - Efectivo - ClienteNo InteresaError En Cotizacion;;90
+2C60YC;Conecta - Efectivo - Cliente;No Interesa;Ya Contactado Anteriormente;Conecta - Efectivo - ClienteNo InteresaYa Contactado Anteriormente;;81
+2C29DV;Conecta - No efectivo - Tercero;De vacaciones;;Conecta - No efectivo - TerceroDe vacaciones;;42
+2C33FA;Conecta - No efectivo - Tercero;Fallecido;;Conecta - No efectivo - TerceroFallecido;;34
+2C30NC;Conecta - No efectivo - Tercero;No desea contestar;;Conecta - No efectivo - TerceroNo desea contestar;;40
+2C34NV;Conecta - No efectivo - Tercero;No vive Ahí;;Conecta - No efectivo - TerceroNo vive Ahí;;32
+2C28PH;Conecta - No efectivo - Tercero;Problema por horario;;Conecta - No efectivo - TerceroProblema por horario;;44
+2C35TN;Conecta - No efectivo - Tercero;Teléfono no corresponde a Titular;;Conecta - No efectivo - TerceroTeléfono no corresponde a Titular;;30
+2C26TP;Conecta - No efectivo - Tercero;Tercero pide dejar pendiente;;Conecta - No efectivo - TerceroTercero pide dejar pendiente;;48
+2C27VJ;Conecta - No efectivo - Tercero;Viaje;;Conecta - No efectivo - TerceroViaje;;46
+2C32VF;Conecta - No efectivo - Tercero;Vive Fuera del País;;Conecta - No efectivo - TerceroVive Fuera del País;;36
+2C31NT;Conecta - No efectivo - Tercero;Ya no trabaja ahí;;Conecta - No efectivo - TerceroYa no trabaja ahí;;38
+1NC6BV;No conecta;Buzón de Voz;;No conectaBuzón de Voz;;20
+AA;No conecta;Buzón de Voz;;No conectaBuzón de Voz;;20
+1NC2CO;No conecta;Congestionado;;No conectaCongestionado;;16
+DONEM;No conecta;Congestionado;;No conectaCongestionado;;16
+1NC3FA;No conecta;Fuera de área o apagado;;No conectaFuera de área o apagado;;14
+2C37NT;Conecta - Efectivo - Cliente;No Interesa;No Tiene otro Vehiculo;Conecta - Efectivo - ClienteNo InteresaNo Tiene otro Vehiculo;;74
+INCALL;No conecta;Fuera de Servicio;;No conectaFuera de Servicio;;12
+1NC1NC;No conecta;No contesta;;No conectaNo contesta;;18
+ALTNUM;No conecta;No contesta;;No conectaNo contesta;;18
+CBHOLD;No conecta;No contesta;;No conectaNo contesta;;18
+2C62ME;Conecta - efectivo - Cliente;No Interesa;Mala experiencia con Zenit;Conecta - efectivo - ClienteNo InteresaMala experiencia con Zenit;;96
+NA;No conecta;No contesta;;No conectaNo contesta;;18
+NANQUE;No conecta;No contesta;;No conectaNo contesta;;18
+PDROP;No conecta;No contesta;;No conectaNo contesta;;18
+1NC7NC;No conecta;No contesta;;No conectaNo contesta;;18
+1NC9IN;No conecta;Número no válido;;No conectaNúmero no válido;;24
+1NC5OC;No conecta;Ocupado;;No conectaOcupado;;22
+AB;No conecta;Ocupado;;No conectaOcupado;;22
+ADC;No conecta;Ocupado;;No conectaOcupado;;22
+B;No conecta;Ocupado;;No conectaOcupado;;22
+DISPO;No conecta;Ocupado;;No conectaOcupado;;22
+1NC7SC;No conecta;Supera cantidad de intentos;;No conectaSupera cantidad de intentos;;28
+2C36TV;Conecta - Efectivo - Cliente;No Interesa;Cliente Paga TC VISTA;Conecta - Efectivo - ClienteNo InteresaCliente Paga TC VISTA;;99
+2C37NA;Conecta - Efectivo - Cliente;No Interesa;Cliente Aun no Tiene Auto;Conecta - Efectivo - ClienteNo InteresaCliente Aun no Tiene Auto;;74
+2C38SP;Conecta - Efectivo - Cliente;No Interesa;Cliente Sin Medio de Pago;Conecta - Efectivo - ClienteNo InteresaCliente Sin Medio de Pago;;85
+2C65SA;Conecta - efectivo - Cliente;No Interesa;Seguro Auto;Conecta - efectivo - ClienteNo InteresaSeguro Auto;;74
+2C66SH;Conecta - efectivo - Cliente;No Interesa;Seguro Hogar;Conecta - efectivo - ClienteNo InteresaSeguro Hogar;;68
+2C4MO;Conecta - efectivo - Cliente;No Interesa;Mejor oferta Competencia;Conecta - efectivo - ClienteNo InteresaMejor oferta Competencia;;94
+2C68AC;Conecta - efectivo - Cliente;No Interesa;Abandona Cliente;Conecta - efectivo - ClienteNo InteresaAbandona Cliente;;50
+2C61CE;Conecta - efectivo - Cliente;No Interesa;Cotizacion Enviada;Conecta - efectivo - ClienteNo InteresaCotizacion Enviada;;97
+2C61SC;Conecta - efectivo - Cliente;No Interesa;Ya tiene Seguro Complementario;Conecta - efectivo - ClienteNo InteresaYa tiene Seguro Complementario;Terminado;92
+2C62NI;Conecta - efectivo - Cliente;No Interesa;No Interesa Compl ni Catrastof;Conecta - efectivo - ClienteNo InteresaNo Interesa Compl ni Catrastof;;91
+2C63TS;Conecta - efectivo - Cliente;No Interesa;Ya tiene Seguro Catastrofico;Conecta - efectivo - ClienteNo InteresaYa tiene Seguro Catastrofico;Terminado;89
+NOTM;Conecta - efectivo - Cliente;No Interesa;No tiene Mascota;Conecta - efectivo - ClienteNo InteresaNo tiene Mascota;;75
+2C5YT;Conecta - efectivo - Cliente;No venta;Ya tiene Seguro;Conecta - efectivo - ClienteNo ventaYa tiene Seguro;Terminado;53
+2C15AT;Conecta - efectivo - Cliente;No venta;DPA Mediana o alta tensión electrica;Conecta - efectivo - ClienteNo ventaDPA Mediana o alta tensión electrica;;70
+2C16MM;Conecta - efectivo - Cliente;No venta;DPA Moto mayor a 250 cc.;Conecta - efectivo - ClienteNo ventaDPA Moto mayor a 250 cc.;;68
+2C17PA;Conecta - efectivo - Cliente;No venta;DPA Porta armas;Conecta - efectivo - ClienteNo ventaDPA Porta armas;;66
+2C18RD;Conecta - efectivo - Cliente;No venta;DPA Realiza deportes riesgosos;Conecta - efectivo - ClienteNo ventaDPA Realiza deportes riesgosos;;64
+2C19TA;Conecta - efectivo - Cliente;No venta;DPA Trabaja en altura;Conecta - efectivo - ClienteNo ventaDPA Trabaja en altura;;62
+2C20FM;Conecta - efectivo - Cliente;No venta;DPA Trabaja en Faena Minera;Conecta - efectivo - ClienteNo ventaDPA Trabaja en Faena Minera;;60
+2C21AR;Conecta - efectivo - Cliente;No venta;DPA Actividad alto riesgo;Conecta - efectivo - ClienteNo ventaDPA Actividad alto riesgo;;58
+2C22UA;Conecta - efectivo - Cliente;No venta;Uniformado Activo;Conecta - efectivo - ClienteNo ventaUniformado Activo;;56
+2C23EP;Conecta - efectivo - Cliente;No venta;Enfermedad Preexistente;Conecta - efectivo - ClienteNo ventaEnfermedad Preexistente;;54
+2C24YN;Conecta - efectivo - Cliente;No venta;Ya no es cliente;Conecta - efectivo - ClienteNo ventaYa no es cliente;;52
+2C25OT;Conecta - efectivo - Cliente;No venta;Otros (Registrar);Conecta - efectivo - ClienteNo ventaOtros (Registrar);;50
+3N14NC;Conecta - efectivo - Cliente;No venta;No cumple requisito asegurabilidad ;Conecta - efectivo - ClienteNo ventaNo cumple requisito asegurabilidad ;;49
+2C38CP;Conecta - efectivo - Cliente;No venta;Consulta de poliza vigente;Conecta - efectivo - ClienteNo ventaConsulta de poliza vigente;;90
+2C39RP;Conecta - efectivo - Cliente;No venta;Renuncia de poliza;Conecta - efectivo - ClienteNo ventaRenuncia de poliza;;45
+2C40OS;Conecta - efectivo - Cliente;No venta;Necesita otro seguro;Conecta - efectivo - ClienteNo ventaNecesita otro seguro;;46
+2C41NL;Conecta - efectivo - Cliente;No venta;No le llego póliza de otros seguros;Conecta - efectivo - ClienteNo ventaNo le llego póliza de otros seguros;;90
+2C42NT;Conecta - efectivo - Cliente;No venta;No cuenta con TC;Conecta - efectivo - ClienteNo ventaNo cuenta con TC;;49
+2C5YT;Conecta - efectivo - Cliente;No venta;Ya tiene Seguro;Conecta - efectivo - ClienteNo ventaYa tiene Seguro;;53
+2E15TS;Conecta - efectivo - Cliente;No venta;Ya tiene Seguro;Conecta - efectivo - ClienteNo ventaYa tiene Seguro;;53
+2C67OT;Conecta - efectivo - Cliente;No venta;Otros (Registrar);Conecta - efectivo - ClienteNo ventaOtros (Registrar);;50
+2C64DC;Conecta - Efectivo - Cliente;No Venta;Derivación CRI;Conecta - Efectivo - ClienteNo VentaDerivación CRI;;95
+2E25OT;Conecta - efectivo - Cliente;No venta;Otros (Registrar);Conecta - efectivo - ClienteNo ventaOtros (Registrar);;50
+2C65AC;Conecta - efectivo - Cliente;No venta;Alto Costo;Conecta - efectivo - ClienteNo ventaAlto Costo;;67
+2C64DR;Conecta - efectivo - Cliente;No venta;DPS Rechazada;Conecta - efectivo - ClienteNo ventaDPS Rechazada;Terminado;69
+3N6TN;Conecta - No efectivo - Tercero;Teléfono no corresponde a Titular;;Conecta - No efectivo - TerceroTeléfono no corresponde a Titular;;30
+2C66SE;Conecta - efectivo - Cliente;No venta;Supera Edad de Contratacion;Conecta - efectivo - ClienteNo ventaSupera Edad de Contratacion;Terminado;65
+CSNCC;Conecta - No efectivo - Tercero;Cliente sin cuenta corriente Bci;;Conecta - No efectivo - TerceroCliente sin cuenta corriente Bci;;45
+3XCORT;Conecta- Comunica con Tercero;No Valido;Se Corta la llamada con cliente;Conecta- Comunica con TerceroNo ValidoSe Corta la llamada con cliente;;41
+2C67MC;Conecta - efectivo - Cliente;No venta;Solicita Mayor Cobertura;Conecta - efectivo - ClienteNo ventaSolicita Mayor Cobertura;Terminado;63
+NCCDS;Conecta - efectivo - Cliente;No venta;No Cumple Condiciones de Seguridad;Conecta - efectivo - ClienteNo ventaNo Cumple Condiciones de Seguridad;Terminado;49
+NCCMC;Conecta - efectivo - Cliente;No venta;No Cumple Condiciones Material Construccion;Conecta - efectivo - ClienteNo ventaNo Cumple Condiciones Material Construccion;Terminado;47
+AFTHRS;No conecta;Fuera Horario;;No conectaFuera Horario;;12
+DROP;No conecta;No contesta;;No conectaNo contesta;;18
+2C36PV;Conecta - efectivo - Cliente;No venta ;Cliente Póliza Vigente BCI;Conecta - efectivo - ClienteNo venta Cliente Póliza Vigente BCI;;90
+3N11NL;Conecta - efectivo - Cliente;No venta ;Dirección no geo localizable;Conecta - efectivo - ClienteNo venta Dirección no geo localizable;;20
+3N12NA;Conecta - efectivo - Cliente;No venta ;RUT no asegurable;Conecta - efectivo - ClienteNo venta RUT no asegurable;;45
+3N13CB;Conecta - efectivo - Cliente;No venta ;Comuna Bloqueada;Conecta - efectivo - ClienteNo venta Comuna Bloqueada;;75
+2C37DS;Conecta - efectivo - Cliente;No venta ;Denuncia de siniestro;Conecta - efectivo - ClienteNo venta Denuncia de siniestro;;95
+3X2VL;Conecta - efectivo - Cliente;Volver a Llamar;;Conecta - efectivo - ClienteVolver a Llamar;;73
+1NC3FX;No conecta;Fax;;No conectaFax;Terminado;26
+ADCT;No conecta;Congestionado;;No conectaCongestionado;;16
+2C71NE;Conecta - efectivo - Cliente;No Interesa;No entrega motivos;Conecta - efectivo - ClienteNo InteresaNo entrega motivos;;85
+CSCCB;Conecta - No efectivo - Tercero;Cliente sin cuenta corriente Bci;No entrega motivos;Conecta - No efectivo - TerceroCliente sin cuenta corriente BciNo entrega motivos;;45
+2C69BC;Conecta - efectivo - Cliente;No Interesa;No entrega motivos;Conecta - efectivo - ClienteNo InteresaNo entrega motivos;;85
+VEWSP;Conecta - efectivo - Cliente;Interesa;Venta;Conecta - efectivo - ClienteInteresaVenta;;100
+2C1VI;Conecta - efectivo - Cliente;Interesa;Venta;Conecta - efectivo - ClienteInteresaVenta;;100
+2C1VG;Conecta - efectivo - Cliente;Interesa;Venta;Conecta - efectivo - ClienteInteresaVenta;;100
+VTANVA;Conecta - efectivo - Cliente;Interesa;Venta;Conecta - efectivo - ClienteInteresaVenta;;100
+PU;Conecta - efectivo - Cliente;Agent Not Available;Agent Not Available;Conecta - efectivo - ClienteAgent Not AvailableAgent Not Available;;35
+2C70SE;Conecta - Efectivo - Cliente;No Interesa;Busca seguro estructural;Conecta - Efectivo - ClienteNo InteresaBusca seguro estructural;;85
+CDBS;Conecta - efectivo - Cliente;No venta;Cliente dio de baja Seguro;Conecta - efectivo - ClienteNo ventaCliente dio de baja Seguro;;53
+CNDESC;Conecta - efectivo - Cliente;No Interesa;Cliente No Desea Escuchar;Conecta - efectivo - ClienteNo InteresaCliente No Desea Escuchar;;84
+CNET;Conecta - No efectivo - Tercero;Conecta no efectivo tercero;Conecta no efectivo tercero;Conecta - No efectivo - TerceroConecta no efectivo terceroConecta no efectivo tercero;;31
+2C73CE;Conecta - efectivo - Cliente;Interesa;Cotizacion Enviada;Conecta - efectivo - ClienteInteresaCotizacion Enviada;;97
+2C75CE;Conecta - efectivo - Cliente;No venta;Cuenta Corriente Erronea;Conecta - efectivo - ClienteNo ventaCuenta Corriente Erronea;;69
+ADAIR;No conecta;Dead Air Auto;Dead Air Auto;No conectaDead Air AutoDead Air Auto;;19
+2E18MM;Conecta - efectivo - Cliente;No venta;DPA Moto mayor a 250 cc.;Conecta - efectivo - ClienteNo ventaDPA Moto mayor a 250 cc.;;68
+ERI;Error Agente;Error Agente;Error Agente;Error AgenteError AgenteError Agente;;3
+TIMEOT;Conecta - efectivo - Cliente;Agent Not Available;Inbound Queue Timeout Drop;Conecta - efectivo - ClienteAgent Not AvailableInbound Queue Timeout Drop;;35
+QUEUE;No conecta;Lead To Be Called;Lead To Be Called;No conectaLead To Be CalledLead To Be Called;;21
+DNCC;Lista Negra Campaña;Lista Negra Campaña;Lista Negra Campaña;Lista Negra CampañaLista Negra CampañaLista Negra Campaña;;80
+DNCL;Lista Negra Vicidial;Lista Negra Vicidial;Lista Negra Vicidial;Lista Negra VicidialLista Negra VicidialLista Negra Vicidial;;80
+MNCCAS;Conecta - efectivo - Cliente;No Venta;Mascota No Cumple Condiciones;Conecta - efectivo - ClienteNo VentaMascota No Cumple Condiciones;;46
+2C74NA;Conecta - efectivo - Cliente;No venta ;No Asegurable por Materialidad;Conecta - efectivo - ClienteNo venta No Asegurable por Materialidad;;46
+5ANOCO;No conecta;No contesta;No contesta;No conectaNo contestaNo contesta;;18
+NCCMC2;Conecta - efectivo - Cliente;No venta;No Cumple Condiciones Mat Cons;Conecta - efectivo - ClienteNo ventaNo Cumple Condiciones Mat Cons;;46
+NEW;No Discado;No Discado;No Discado;No DiscadoNo DiscadoNo Discado;;1
+NTTP;No Tipificado;No Tipificado en Tiempo Predeterminado;No Tipificado en Tiempo Predeterminado;No TipificadoNo Tipificado en Tiempo PredeterminadoNo Tipificado en Tiempo Predeterminado;;17
+2C72PV;Conecta - efectivo - Cliente;Interesa;Preventa;Conecta - efectivo - ClienteInteresaPreventa;;99
+2C2REC;Conecta - efectivo - Cliente;Recuperacion;Recuperacion;Conecta - efectivo - ClienteRecuperacionRecuperacion;;98
+SEINFO;Conecta - efectivo - Cliente;Interesa;Se entrega Informacion;Conecta - efectivo - ClienteInteresaSe entrega Informacion;;97
+INFWSP;Conecta - efectivo - Cliente;Interesa;Se Envia Info Whatsapp;Conecta - efectivo - ClienteInteresaSe Envia Info Whatsapp;;97
+2C76SC;Conecta - efectivo - Cliente;No venta;Seguro Cotizado por Colaborado;Conecta - efectivo - ClienteNo ventaSeguro Cotizado por Colaborado;;68
+2C68SP;Conecta - efectivo - Cliente;No venta;Sin prevision de salud;Conecta - efectivo - ClienteNo ventaSin prevision de salud;;50
+CYLLD;Conecta - Efectivo - Cliente;No Interesa;Ya Contactado Anteriormente;Conecta - Efectivo - ClienteNo InteresaYa Contactado Anteriormente;;81
+2E31PV;Conecta - Efectivo - Cliente;Interesa;Pre-venta;;;
+PENPAG;Conecta - Efectivo - Cliente;Pendiente de pago;;;;
+ENINGO;Conecta - Efectivo - Cliente;Envio informacion por GO;;;;
