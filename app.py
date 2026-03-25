@@ -58,7 +58,6 @@ def limpiar_rut(rut):
 def load_masters():
     tips, camps = None, None
     
-    # Intentar cargar Tipificaciones con múltiples codificaciones para evitar errores silenciosos
     try: tips = pd.read_csv('tipificaciones.csv', sep=None, engine='python', encoding='utf-8')
     except:
         try: tips = pd.read_csv('tipificaciones.csv', sep=None, engine='python', encoding='latin1')
@@ -66,7 +65,6 @@ def load_masters():
             try: tips = pd.read_excel('tipificaciones.xlsx')
             except: pass
 
-    # Intentar cargar Campañas
     try: camps = pd.read_csv('campanas.csv', sep=None, engine='python', encoding='utf-8')
     except:
         try: camps = pd.read_csv('campanas.csv', sep=None, engine='python', encoding='latin1')
@@ -152,16 +150,18 @@ if file:
                 df_tips_unique = df_tips.drop_duplicates(subset=['COD_clean'])
                 m_tips = pd.merge(df_input[['status_clean']], df_tips_unique, left_on='status_clean', right_on='COD_clean', how='left')
                 
-                res['GES_descripcion_1'] = m_tips.get('Calif_1', pd.Series(dtype=str)).fillna('').values
-                res['GES_descripcion_2'] = m_tips.get('Calif_2', pd.Series(dtype=str)).fillna('').values
-                res['GES_descripcion_3'] = m_tips.get('Calif_3', pd.Series(dtype=str)).fillna('').values
+                res['GES_descripcion_1'] = m_tips['Calif_1'].fillna('').values if 'Calif_1' in m_tips.columns else ""
+                res['GES_descripcion_2'] = m_tips['Calif_2'].fillna('').values if 'Calif_2' in m_tips.columns else ""
+                res['GES_descripcion_3'] = m_tips['Calif_3'].fillna('').values if 'Calif_3' in m_tips.columns else ""
 
             bar.progress(65)
             time.sleep(0.2)
 
-            # Campañas
-            status.markdown("**80%** - Realizando cruces de campañas y asignando variables finales...")
+            # Campañas y Variable 27 Dinámica
+            status.markdown("**80%** - Realizando cruces de campañas e inyectando mes/año...")
             res['GES_nombre_campana_gestion'] = ""
+            res['GES_dato_variable_27'] = ""
+            
             if df_camps is not None and not df_camps.empty and 'ORIGINAL' in df_camps.columns and 'campaign_id' in df_input.columns:
                 df_input['camp_clean'] = df_input['campaign_id'].fillna('').astype(str).str.strip().str.upper()
                 df_camps['ORIGINAL_clean'] = df_camps['ORIGINAL'].fillna('').astype(str).str.strip().str.upper()
@@ -169,14 +169,23 @@ if file:
                 df_camps_unique = df_camps.drop_duplicates(subset=['ORIGINAL_clean'])
                 m_camps = pd.merge(df_input[['camp_clean']], df_camps_unique, left_on='camp_clean', right_on='ORIGINAL_clean', how='left')
                 
-                res['GES_nombre_campana_gestion'] = m_camps.get('FINAL', pd.Series(dtype=str)).fillna('').values
+                res['GES_nombre_campana_gestion'] = m_camps['FINAL'].fillna('').values if 'FINAL' in m_camps.columns else ""
+                
+                # REEMPLAZO DINÁMICO DE "MMYYYY"
+                if 'GES_dato_variable_27' in m_camps.columns:
+                    base_var_27 = m_camps['GES_dato_variable_27'].fillna('').astype(str).values
+                    fechas_mmyyyy = call_dt.dt.strftime('%m%Y').fillna('').values
+                    
+                    res['GES_dato_variable_27'] = [
+                        val.replace('MMYYYY', fecha) if 'MMYYYY' in val else val 
+                        for val, fecha in zip(base_var_27, fechas_mmyyyy)
+                    ]
 
             bar.progress(80)
             time.sleep(0.2)
 
             # --- PASO 4: Lógica Final y Orden ---
-            status.markdown("**90%** - Aplicando formato MAYÚSCULAS y reordenando columnas...")
-            res['GES_dato_variable_27'] = call_dt.dt.strftime('%m%Y')
+            status.markdown("**90%** - Aplicando formato de texto y reordenando columnas...")
 
             es_venta = res['GES_descripcion_3'].fillna('').astype(str).str.upper().str.contains('VENTA')
             res['GES_dato_variable_05'] = ""
@@ -197,9 +206,14 @@ if file:
             ]
             
             res = res.reindex(columns=orden_columnas)
-            # Aplicar MAYÚSCULAS a toda la tabla
+            
+            # Aplicar MAYÚSCULAS a toda la tabla inicialmente
             res = res.astype(str).apply(lambda x: x.str.upper())
             res = res.replace(['NAN', 'NONE', '<NA>'], '')
+
+            # Aplicar NOMPROPIO (Title Case) exclusivamente a las columnas de recursos
+            res['GES_username_recurso'] = res['GES_username_recurso'].str.title()
+            res['FDL_username_originador'] = res['FDL_username_originador'].str.title()
 
             bar.progress(100)
             status.success("✅ **100%** - ¡Proceso completado con éxito!")
