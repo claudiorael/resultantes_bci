@@ -11,8 +11,10 @@ st.set_page_config(page_title="Procesador BCI - Recaall", layout="wide")
 def limpiar_rut(rut):
     if pd.isna(rut) or rut == '':
         return ""
+    # Convertir a string primero para evitar error de concatenación
+    rut_str = str(rut)
     # Dejar solo números y la letra K
-    rut_limpio = re.sub(r'[^0-9kK]', '', str(rut))
+    rut_limpio = re.sub(r'[^0-9kK]', '', rut_str)
     return rut_limpio.upper()
 
 # Función para cargar maestros desde GitHub
@@ -59,7 +61,7 @@ if file:
             res['FDL_username_originador'] = df_input['full_name']
             res['GES_ani'] = df_input['phone_number_dialed']
             
-            # Aplicamos la limpieza de RUT a GES_id_cliente
+            # Aplicamos la limpieza de RUT
             res['GES_id_cliente'] = df_input['vendor_lead_code'].apply(limpiar_rut)
             
             # 2. Fechas y Horas
@@ -67,10 +69,13 @@ if file:
             res['GES_fecha_creacion'] = call_dt.dt.strftime('%d/%m/%Y')
             res['GES_hora_min_creacion'] = call_dt.dt.strftime('%H:%M:%S')
 
-            # 3. Nombre Cliente
-            res['GES_nombre_cliente'] = (df_input['first_name'].fillna('') + " " + 
-                                        df_input['middle_initial'].fillna('') + " " + 
-                                        df_input['last_name'].fillna('')).str.strip()
+            # 3. Nombre Cliente (Corregido: Forzar string en cada parte)
+            res['GES_nombre_cliente'] = (
+                df_input['first_name'].astype(str).replace('nan', '') + " " + 
+                df_input['middle_initial'].astype(str).replace('nan', '') + " " + 
+                df_input['last_name'].astype(str).replace('nan', '')
+            ).str.strip()
+            
             res['GES_estado_cliente'] = "T"
 
             # 4. Duración
@@ -110,7 +115,7 @@ if file:
             res = res.replace('NAN', '')
 
             # 8. Mostrar Resultado y Descarga
-            st.success("¡Resultante procesada! RUTs validados y formato en MAYÚSCULAS.")
+            st.success("¡Resultante procesada! Formato corregido y en MAYÚSCULAS.")
             st.dataframe(res.head())
 
             output = BytesIO()
@@ -120,7 +125,7 @@ if file:
             st.download_button(
                 label="📥 Descargar Reporte Final BCI",
                 data=output.getvalue(),
-                file_name="Resultante_BCI_Validador.xlsx",
+                file_name="Resultante_BCI_Final.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
