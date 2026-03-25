@@ -83,4 +83,130 @@ with col1:
     st.markdown('<div class="recaall-card">', unsafe_allow_html=True)
     st.markdown("#### ⚙️ Configuración")
     st.write("Verificando archivos maestros:")
-    if df_tips
+    if df_tips is not None: st.success("✅ Tipificaciones OK")
+    else: st.error("❌ Tipificaciones no detectadas")
+    
+    if df_camps is not None: st.success("✅ Campañas OK")
+    else: st.error("❌ Campañas no detectadas")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with col2:
+    file = st.file_uploader("📥 Subir reporte Vicidial para procesamiento", type=["xlsx", "csv"])
+
+if file:
+    try:
+        df_input = pd.read_excel(file) if file.name.endswith('xlsx') else pd.read_csv(file, sep=None, engine='python')
+        df_input.columns = df_input.columns.str.strip()
+        
+        st.info(f"📋 Se han cargado {len(df_input)} registros correctamente.")
+        
+        if st.button("🚀 PROCESAR"):
+            bar = st.progress(0)
+            status = st.empty()
+            
+            res = pd.DataFrame()
+            
+            # Paso 1: Identificadores y Fecha
+            status.text("Estructurando datos base...")
+            res['GES_nro_contacto'] = df_input['lead_id']
+            call_dt = pd.to_datetime(df_input['call_date'])
+            res['GES_fecha_creacion'] = call_dt.dt.strftime('%d/%m/%Y')
+            res['GES_hora_min_creacion'] = call_dt.dt.strftime('%H:%M:%S')
+            res['GES_username_recurso'] = df_input['full_name']
+            res['GES_ani'] = df_input['phone_number_dialed']
+            res['GES_id_cliente'] = df_input['vendor_lead_code'].apply(limpiar_rut)
+            
+            bar.progress(20)
+            time.sleep(0.2)
+
+            # Paso 2: Datos de Gestión
+            status.text("Calculando tiempos y nombres...")
+            res['GES_nombre_cliente'] = (df_input['first_name'].astype(str).replace('nan', '') + " " + df_input['last_name'].astype(str).replace('nan', '')).str.strip()
+            res['GES_estado_cliente'] = "T"
+            res['FDL_identificador_documento'] = df_input['lead_id']
+            res['FDL_referencia_documento'] = df_input['length_in_sec'].apply(lambda x: str(timedelta(seconds=int(x))) if pd.notnull(x) else "00:00:00")
+            res['FDL_username_originador'] = df_input['full_name']
+            
+            bar.progress(40)
+            time.sleep(0.2)
+
+            # Paso 3: Cruces (Tipificaciones)
+            status.text("Realizando cruce de tipificaciones...")
+            res['GES_descripcion_1'], res['GES_descripcion_2'], res['GES_descripcion_3'] = "", "", ""
+            if df_tips is not None and 'COD_VICIDIAL' in df_tips.columns:
+                df_input['status'] = df_input['status'].astype(str).str.strip().str.upper()
+                df_tips['COD_VICIDIAL'] = df_tips['COD_VICIDIAL'].astype(str).str.strip().str.upper()
+                m_tips = pd.merge(df_input[['status']], df_tips, left_on='status', right_on='COD_VICIDIAL', how='left')
+                res['GES_descripcion_1'] = m_tips.get('Calif_1', "")
+                res['GES_descripcion_2'] = m_tips.get('Calif_2', "")
+                res['GES_descripcion_3'] = m_tips.get('Calif_3', "")
+            
+            bar.progress(60)
+            time.sleep(0.2)
+
+            # Paso 4: Cruces (Campañas)
+            status.text("Realizando cruce de campañas...")
+            res['GES_nombre_campana_gestion'] = ""
+            if df_camps is not None and 'ORIGINAL' in df_camps.columns:
+                df_input['campaign_id'] = df_input['campaign_id'].astype(str).str.strip().str.upper()
+                df_camps['ORIGINAL'] = df_camps['ORIGINAL'].astype(str).str.strip().str.upper()
+                m_camps = pd.merge(df_input[['campaign_id']], df_camps, left_on='campaign_id', right_on='ORIGINAL', how='left')
+                res['GES_nombre_campana_gestion'] = m_camps.get('FINAL', "")
+            
+            bar.progress(80)
+            time.sleep(0.2)
+
+            # Paso 5: Lógica Final (Variables 05, 26, 27)
+            status.text("Asignando variables finales y formato...")
+            res['GES_dato_variable_27'] = call_dt.dt.strftime('%m%Y')
+
+            es_venta = res['GES_descripcion_3'].fillna('').astype(str).str.upper().str.contains('VENTA')
+            res['GES_dato_variable_05'] = ""
+            res['GES_dato_variable_26'] = ""
+            if 'BI' in df_input.columns: res.loc[es_venta, 'GES_dato_variable_05'] = df_input.loc[es_venta, 'BI']
+            if 'BK' in df_input.columns: res.loc[es_venta, 'GES_dato_variable_26'] = df_input.loc[es_venta, 'BK']
+            res['GES_dato_variable_19'] = ""
+
+            # Orden estricto solicitado
+            orden_columnas = [
+                'GES_nro_contacto', 'GES_fecha_creacion', 'GES_hora_min_creacion', 
+                'GES_username_recurso', 'GES_ani', 'GES_id_cliente', 
+                'GES_nombre_cliente', 'GES_estado_cliente', 'FDL_identificador_documento', 
+                'FDL_referencia_documento', 'FDL_username_originador', 'GES_descripcion_1', 
+                'GES_descripcion_2', 'GES_descripcion_3', 'GES_nombre_campana_gestion', 
+                'GES_dato_variable_05', 'GES_dato_variable_26', 'GES_dato_variable_27', 
+                'GES_dato_variable_19'
+            ]
+            
+            res = res.reindex(columns=orden_columnas)
+            # Todo a mayúsculas
+            res = res.astype(str).apply(lambda x: x.str.upper())
+            res = res.replace(['NAN', 'NONE', '<NA>'], '')
+
+            bar.progress(100)
+            status.success("🚀 ¡Proceso completado con éxito!")
+            time.sleep(0.5)
+            
+            st.dataframe(res.head(10))
+
+            # --- GENERACIÓN DEL EXCEL CON CALIBRI 9 ---
+            output = BytesIO()
+            with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                res.to_excel(writer, index=False, sheet_name='Resultante BCI')
+                
+                worksheet = writer.sheets['Resultante BCI']
+                fuente_calibri = Font(name='Calibri', size=9)
+                
+                for row in worksheet.iter_rows():
+                    for cell in row:
+                        cell.font = fuente_calibri
+            
+            st.download_button(
+                label="📥 DESCARGAR REPORTE RECAALL",
+                data=output.getvalue(),
+                file_name="RECAALL_BCI_FINAL.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+
+    except Exception as e:
+        st.error(f"Error técnico durante el proceso: {e}")
