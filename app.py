@@ -13,7 +13,6 @@ st.markdown("""
     <style>
     .main { background-color: #f4f7f9; }
     
-    /* Botón Principal */
     .stButton>button {
         width: 100%;
         border-radius: 8px;
@@ -32,7 +31,6 @@ st.markdown("""
         color: white;
     }
     
-    /* Tarjetas de información */
     .recaall-card {
         padding: 25px;
         border-radius: 12px;
@@ -42,11 +40,9 @@ st.markdown("""
         margin-bottom: 20px;
     }
     
-    /* Títulos */
     h1 { color: #003366; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; }
     h3 { color: #555555; }
     
-    /* Barra de Progreso */
     .stProgress > div > div > div > div { background-color: #003366; }
     </style>
     """, unsafe_allow_html=True)
@@ -83,10 +79,10 @@ with col1:
     st.markdown('<div class="recaall-card">', unsafe_allow_html=True)
     st.markdown("#### ⚙️ Configuración")
     st.write("Verificando archivos maestros:")
-    if df_tips is not None: st.success("✅ Tipificaciones OK")
+    if df_tips is not None and not df_tips.empty: st.success("✅ Tipificaciones OK")
     else: st.error("❌ Tipificaciones no detectadas")
     
-    if df_camps is not None: st.success("✅ Campañas OK")
+    if df_camps is not None and not df_camps.empty: st.success("✅ Campañas OK")
     else: st.error("❌ Campañas no detectadas")
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -106,57 +102,68 @@ if file:
             
             res = pd.DataFrame()
             
-            # Paso 1: Identificadores y Fecha
+            # --- PASO 1: Identificadores y Fecha ---
             status.text("Estructurando datos base...")
-            res['GES_nro_contacto'] = df_input['lead_id']
-            call_dt = pd.to_datetime(df_input['call_date'])
+            res['GES_nro_contacto'] = df_input.get('lead_id', '')
+            call_dt = pd.to_datetime(df_input.get('call_date', pd.Series(dtype='datetime64[ns]')))
             res['GES_fecha_creacion'] = call_dt.dt.strftime('%d/%m/%Y')
             res['GES_hora_min_creacion'] = call_dt.dt.strftime('%H:%M:%S')
-            res['GES_username_recurso'] = df_input['full_name']
-            res['GES_ani'] = df_input['phone_number_dialed']
-            res['GES_id_cliente'] = df_input['vendor_lead_code'].apply(limpiar_rut)
+            res['GES_username_recurso'] = df_input.get('full_name', '')
+            res['GES_ani'] = df_input.get('phone_number_dialed', '')
+            res['GES_id_cliente'] = df_input.get('vendor_lead_code', pd.Series(dtype=str)).apply(limpiar_rut)
             
             bar.progress(20)
             time.sleep(0.2)
 
-            # Paso 2: Datos de Gestión
+            # --- PASO 2: Datos de Gestión ---
             status.text("Calculando tiempos y nombres...")
-            res['GES_nombre_cliente'] = (df_input['first_name'].astype(str).replace('nan', '') + " " + df_input['last_name'].astype(str).replace('nan', '')).str.strip()
+            res['GES_nombre_cliente'] = (df_input.get('first_name', pd.Series(dtype=str)).astype(str).replace('nan', '') + " " + df_input.get('last_name', pd.Series(dtype=str)).astype(str).replace('nan', '')).str.strip()
             res['GES_estado_cliente'] = "T"
-            res['FDL_identificador_documento'] = df_input['lead_id']
-            res['FDL_referencia_documento'] = df_input['length_in_sec'].apply(lambda x: str(timedelta(seconds=int(x))) if pd.notnull(x) else "00:00:00")
-            res['FDL_username_originador'] = df_input['full_name']
+            res['FDL_identificador_documento'] = df_input.get('lead_id', '')
+            res['FDL_referencia_documento'] = df_input.get('length_in_sec', pd.Series(dtype=float)).apply(lambda x: str(timedelta(seconds=int(x))) if pd.notnull(x) else "00:00:00")
+            res['FDL_username_originador'] = df_input.get('full_name', '')
             
             bar.progress(40)
             time.sleep(0.2)
 
-            # Paso 3: Cruces (Tipificaciones)
-            status.text("Realizando cruce de tipificaciones...")
-            res['GES_descripcion_1'], res['GES_descripcion_2'], res['GES_descripcion_3'] = "", "", ""
-            if df_tips is not None and 'COD_VICIDIAL' in df_tips.columns:
-                df_input['status'] = df_input['status'].astype(str).str.strip().str.upper()
-                df_tips['COD_VICIDIAL'] = df_tips['COD_VICIDIAL'].astype(str).str.strip().str.upper()
-                m_tips = pd.merge(df_input[['status']], df_tips, left_on='status', right_on='COD_VICIDIAL', how='left')
-                res['GES_descripcion_1'] = m_tips.get('Calif_1', "")
-                res['GES_descripcion_2'] = m_tips.get('Calif_2', "")
-                res['GES_descripcion_3'] = m_tips.get('Calif_3', "")
+            # --- PASO 3: Cruces Nativos Eficientes (Merge) ---
+            status.text("Realizando cruces de datos maestros...")
             
-            bar.progress(60)
+            # Tipificaciones
+            res['GES_descripcion_1'], res['GES_descripcion_2'], res['GES_descripcion_3'] = "", "", ""
+            if df_tips is not None and not df_tips.empty and 'COD_VICIDIAL' in df_tips.columns and 'status' in df_input.columns:
+                df_input['status_clean'] = df_input['status'].fillna('').astype(str).str.strip().str.upper()
+                df_tips['COD_clean'] = df_tips['COD_VICIDIAL'].fillna('').astype(str).str.strip().str.upper()
+                
+                # Prevenir duplicados en maestro que rompan la tabla
+                df_tips_unique = df_tips.drop_duplicates(subset=['COD_clean'])
+                
+                # Cruce eficiente
+                m_tips = pd.merge(df_input[['status_clean']], df_tips_unique, left_on='status_clean', right_on='COD_clean', how='left')
+                
+                # Inyección directa de valores
+                res['GES_descripcion_1'] = m_tips.get('Calif_1', pd.Series(dtype=str)).fillna('').values
+                res['GES_descripcion_2'] = m_tips.get('Calif_2', pd.Series(dtype=str)).fillna('').values
+                res['GES_descripcion_3'] = m_tips.get('Calif_3', pd.Series(dtype=str)).fillna('').values
+
+            bar.progress(65)
             time.sleep(0.2)
 
-            # Paso 4: Cruces (Campañas)
-            status.text("Realizando cruce de campañas...")
+            # Campañas
             res['GES_nombre_campana_gestion'] = ""
-            if df_camps is not None and 'ORIGINAL' in df_camps.columns:
-                df_input['campaign_id'] = df_input['campaign_id'].astype(str).str.strip().str.upper()
-                df_camps['ORIGINAL'] = df_camps['ORIGINAL'].astype(str).str.strip().str.upper()
-                m_camps = pd.merge(df_input[['campaign_id']], df_camps, left_on='campaign_id', right_on='ORIGINAL', how='left')
-                res['GES_nombre_campana_gestion'] = m_camps.get('FINAL', "")
-            
+            if df_camps is not None and not df_camps.empty and 'ORIGINAL' in df_camps.columns and 'campaign_id' in df_input.columns:
+                df_input['camp_clean'] = df_input['campaign_id'].fillna('').astype(str).str.strip().str.upper()
+                df_camps['ORIGINAL_clean'] = df_camps['ORIGINAL'].fillna('').astype(str).str.strip().str.upper()
+                
+                df_camps_unique = df_camps.drop_duplicates(subset=['ORIGINAL_clean'])
+                m_camps = pd.merge(df_input[['camp_clean']], df_camps_unique, left_on='camp_clean', right_on='ORIGINAL_clean', how='left')
+                
+                res['GES_nombre_campana_gestion'] = m_camps.get('FINAL', pd.Series(dtype=str)).fillna('').values
+
             bar.progress(80)
             time.sleep(0.2)
 
-            # Paso 5: Lógica Final (Variables 05, 26, 27)
+            # --- PASO 4: Lógica Final y Orden ---
             status.text("Asignando variables finales y formato...")
             res['GES_dato_variable_27'] = call_dt.dt.strftime('%m%Y')
 
@@ -167,7 +174,7 @@ if file:
             if 'BK' in df_input.columns: res.loc[es_venta, 'GES_dato_variable_26'] = df_input.loc[es_venta, 'BK']
             res['GES_dato_variable_19'] = ""
 
-            # Orden estricto solicitado
+            # Reordenamiento estricto
             orden_columnas = [
                 'GES_nro_contacto', 'GES_fecha_creacion', 'GES_hora_min_creacion', 
                 'GES_username_recurso', 'GES_ani', 'GES_id_cliente', 
@@ -179,7 +186,7 @@ if file:
             ]
             
             res = res.reindex(columns=orden_columnas)
-            # Todo a mayúsculas
+            # Aplicar MAYÚSCULAS a toda la tabla
             res = res.astype(str).apply(lambda x: x.str.upper())
             res = res.replace(['NAN', 'NONE', '<NA>'], '')
 
@@ -189,7 +196,7 @@ if file:
             
             st.dataframe(res.head(10))
 
-            # --- GENERACIÓN DEL EXCEL CON CALIBRI 9 ---
+            # --- PASO 5: Generación del Excel (Calibri 9) ---
             output = BytesIO()
             with pd.ExcelWriter(output, engine='openpyxl') as writer:
                 res.to_excel(writer, index=False, sheet_name='Resultante BCI')
