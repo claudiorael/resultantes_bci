@@ -173,4 +173,23 @@ if file:
             ]
             
             res = res.reindex(columns=orden_columnas)
-            res = res.astype(str).apply(lambda x: x
+            res = res.astype(str).apply(lambda x: x.str.upper())
+            res = res.replace(['NAN', 'NONE', '<NA>'], '')
+
+            bar.progress(100)
+            status.success("🚀 ¡Resultante lista para descarga!")
+            st.dataframe(res.head(10))
+
+            output = BytesIO()
+            with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                res.to_excel(writer, index=False)
+            
+            st.download_button(
+                label="📥 DESCARGAR REPORTE RECAALL (MAYÚSCULAS)",
+                data=output.getvalue(),
+                file_name="RECAALL_BCI_FINAL.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+
+    except Exception as e:
+        st.error(f"Error técnico durante el proceso: {e}")
