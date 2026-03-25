@@ -12,7 +12,6 @@ st.set_page_config(page_title="Recaall | Gestión BCI", layout="wide", page_icon
 st.markdown("""
     <style>
     .main { background-color: #f4f7f9; }
-    
     .stButton>button {
         width: 100%;
         border-radius: 8px;
@@ -30,7 +29,6 @@ st.markdown("""
         box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         color: white;
     }
-    
     .recaall-card {
         padding: 25px;
         border-radius: 12px;
@@ -39,10 +37,8 @@ st.markdown("""
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         margin-bottom: 20px;
     }
-    
     h1 { color: #003366; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; }
     h3 { color: #555555; }
-    
     .stProgress > div > div > div > div { background-color: #003366; }
     </style>
     """, unsafe_allow_html=True)
@@ -54,14 +50,22 @@ def limpiar_rut(rut):
 @st.cache_data
 def load_masters():
     tips, camps = None, None
-    try: tips = pd.read_csv('tipificaciones.csv', sep=None, engine='python')
+    
+    # Intentar cargar Tipificaciones con múltiples codificaciones para evitar errores silenciosos
+    try: tips = pd.read_csv('tipificaciones.csv', sep=None, engine='python', encoding='utf-8')
     except:
-        try: tips = pd.read_excel('tipificaciones.xlsx')
-        except: pass
-    try: camps = pd.read_csv('campanas.csv', sep=None, engine='python')
+        try: tips = pd.read_csv('tipificaciones.csv', sep=None, engine='python', encoding='latin1')
+        except:
+            try: tips = pd.read_excel('tipificaciones.xlsx')
+            except: pass
+
+    # Intentar cargar Campañas
+    try: camps = pd.read_csv('campanas.csv', sep=None, engine='python', encoding='utf-8')
     except:
-        try: camps = pd.read_excel('campanas.xlsx')
-        except: pass
+        try: camps = pd.read_csv('campanas.csv', sep=None, engine='python', encoding='latin1')
+        except:
+            try: camps = pd.read_excel('campanas.xlsx')
+            except: pass
     
     if tips is not None: tips.columns = tips.columns.str.strip()
     if camps is not None: camps.columns = camps.columns.str.strip()
@@ -91,7 +95,7 @@ with col2:
 
 if file:
     try:
-        df_input = pd.read_excel(file) if file.name.endswith('xlsx') else pd.read_csv(file, sep=None, engine='python')
+        df_input = pd.read_excel(file) if file.name.endswith('xlsx') else pd.read_csv(file, sep=None, engine='python', encoding='latin1')
         df_input.columns = df_input.columns.str.strip()
         
         st.info(f"📋 Se han cargado {len(df_input)} registros correctamente.")
@@ -135,13 +139,9 @@ if file:
                 df_input['status_clean'] = df_input['status'].fillna('').astype(str).str.strip().str.upper()
                 df_tips['COD_clean'] = df_tips['COD_VICIDIAL'].fillna('').astype(str).str.strip().str.upper()
                 
-                # Prevenir duplicados en maestro que rompan la tabla
                 df_tips_unique = df_tips.drop_duplicates(subset=['COD_clean'])
-                
-                # Cruce eficiente
                 m_tips = pd.merge(df_input[['status_clean']], df_tips_unique, left_on='status_clean', right_on='COD_clean', how='left')
                 
-                # Inyección directa de valores
                 res['GES_descripcion_1'] = m_tips.get('Calif_1', pd.Series(dtype=str)).fillna('').values
                 res['GES_descripcion_2'] = m_tips.get('Calif_2', pd.Series(dtype=str)).fillna('').values
                 res['GES_descripcion_3'] = m_tips.get('Calif_3', pd.Series(dtype=str)).fillna('').values
