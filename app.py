@@ -91,6 +91,57 @@ def limpiar_rut(rut):
 @st.cache_data
 def load_masters():
     tips, camps = None, None
-    try: tips = pd.read_csv('tipificaciones.csv', sep=None, engine='python', encoding='utf-8')
+    
+    # Carga segura en múltiples líneas para evitar errores de copiado
+    try: 
+        tips = pd.read_csv('tipificaciones.csv', sep=None, engine='python', encoding='utf-8')
     except:
-        try: tips = pd.read_csv('tipificaciones.csv
+        try: 
+            tips = pd.read_csv('tipificaciones.csv', sep=None, engine='python', encoding='latin1')
+        except:
+            try: 
+                tips = pd.read_excel('tipificaciones.xlsx')
+            except: 
+                pass
+
+    try: 
+        camps = pd.read_csv('campanas.csv', sep=None, engine='python', encoding='utf-8')
+    except:
+        try: 
+            camps = pd.read_csv('campanas.csv', sep=None, engine='python', encoding='latin1')
+        except:
+            try: 
+                camps = pd.read_excel('campanas.xlsx')
+            except: 
+                pass
+    
+    if tips is not None: 
+        tips.columns = tips.columns.str.strip()
+    if camps is not None: 
+        camps.columns = camps.columns.str.strip()
+        
+    return tips, camps
+
+df_tips, df_camps = load_masters()
+
+# INTERFAZ RECAALL PRINCIPAL
+col_titulo, col_logout = st.columns([4, 1])
+with col_titulo:
+    st.markdown("<h1>RECAALL CONTACT CENTER</h1>", unsafe_allow_html=True)
+    st.markdown("### Generador de Resultantes BCI")
+with col_logout:
+    st.write("<br>", unsafe_allow_html=True)
+    if st.button("🚪 Cerrar Sesión"):
+        st.session_state['autenticado'] = False
+        st.rerun()
+
+st.write("---")
+
+col1, col2 = st.columns([1, 2.5])
+
+with col1:
+    st.markdown("#### ⚙️ Configuración")
+    st.write("Verificando archivos maestros:")
+    if df_tips is not None and not df_tips.empty: 
+        st.success("✅ Tipificaciones OK")
+    else:
