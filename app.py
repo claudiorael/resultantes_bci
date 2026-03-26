@@ -5,7 +5,6 @@ from openpyxl.styles import Font
 
 # 1. CONFIGURACIÓN Y ESTILO CORPORATIVO RECAALL
 st.set_page_config(page_title="Recaall | Gestión BCI", layout="wide", page_icon="📈")
-
 st.markdown("""<style>
     .main { background-color: #f4f7f9; }
     .stButton>button { width: 100%; border-radius: 8px; height: 3.5em; background-color: #003366; color: white; font-weight: 600; border: none; }
@@ -44,10 +43,7 @@ def load_masters():
         for ext in ['.csv', '.xlsx']:
             try:
                 path = f + ext
-                if ext == '.csv': 
-                    data = pd.read_csv(path, sep=None, engine='python', encoding='latin1', on_bad_lines='skip')
-                else: 
-                    data = pd.read_excel(path)
+                data = pd.read_csv(path, sep=None, engine='python', encoding='latin1', on_bad_lines='skip') if ext == '.csv' else pd.read_excel(path)
                 data.columns = data.columns.str.strip()
                 if name == 't': t = data
                 else: c = data
@@ -78,17 +74,15 @@ with col_up:
 
 if file:
     try:
-        if file.name.endswith('xlsx'): df_input = pd.read_excel(file)
-        else: df_input = pd.read_csv(file, sep=None, engine='python', encoding='latin1', on_bad_lines='skip')
-        
+        df_input = pd.read_excel(file) if file.name.endswith('xlsx') else pd.read_csv(file, sep=None, engine='python', encoding='latin1', on_bad_lines='skip')
         df_input.columns = df_input.columns.str.strip()
         st.info(f"📋 Registros cargados: {len(df_input)}")
         
         if st.button("🚀 PROCESAR"):
             bar = st.progress(0); status = st.empty(); res = pd.DataFrame()
             
-            # PASO 1: Fecha e Identificadores (errors='coerce' evita error por "ANTI ROBO")
-            status.markdown("**20%** - Procesando fechas e identificadores..."); bar.progress(20)
+            # PASO 1: Fecha e Identificadores
+            status.markdown("**20%** - Procesando fechas..."); bar.progress(20)
             res['GES_nro_contacto'] = df_input.get('lead_id', '')
             cdt = pd.to_datetime(df_input.get('call_date'), errors='coerce')
             res['GES_fecha_creacion'] = cdt.dt.strftime('%d/%m/%Y')
@@ -107,7 +101,7 @@ if file:
             res['FDL_referencia_documento'] = t_sec.apply(lambda x: str(timedelta(seconds=int(x))) if pd.notnull(x) else "00:00:00")
             res['FDL_username_originador'] = df_input.get('full_name', '')
             
-            # PASO 3: Cruce Tipificaciones
+            # PASO 3: Cruce Tipificaciones (Mismo ID)
             status.markdown("**65%** - Cruzando tipificaciones..."); bar.progress(65)
             if df_tips is not None:
                 df_input['s_cln'] = df_input['status'].fillna('').astype(str).str.strip().str.upper()
@@ -117,20 +111,25 @@ if file:
                 res['GES_descripcion_2'] = m_tips['Calif_2'].fillna('').values
                 res['GES_descripcion_3'] = m_tips['Calif_3'].fillna('').values
 
-            # PASO 4: Cruce Campañas y MMYYYY
+            # PASO 4: Cruce Campañas Mejorado (Evita vacíos)
             status.markdown("**80%** - Cruzando campañas..."); bar.progress(80)
             if df_camps is not None:
-                df_input['c_cln'] = df_input['campaign_id'].fillna('').astype(str).str.strip().str.upper()
-                df_camps['o_cln'] = df_camps['ORIGINAL'].fillna('').astype(str).str.strip().str.upper()
-                m_camps = pd.merge(df_input[['c_cln']], df_camps.drop_duplicates('o_cln'), left_on='c_cln', right_on='o_cln', how='left')
-                res['GES_nombre_campana_gestion'] = m_camps['FINAL'].fillna('').values
+                # Limpiamos IDs de ambos lados para asegurar el cruce
+                df_input['camp_cln'] = df_input['campaign_id'].fillna('').astype(str).str.strip().str.upper()
+                df_camps['orig_cln'] = df_camps['ORIGINAL'].fillna('').astype(str).str.strip().str.upper()
+                
+                m_camps = pd.merge(df_input[['camp_cln']], df_camps.drop_duplicates('orig_cln'), left_on='camp_cln', right_on='orig_cln', how='left')
+                
+                # Si no encuentra en el maestro, deja el ID original de Vicidial
+                res['GES_nombre_campana_gestion'] = m_camps['FINAL'].fillna(m_camps['camp_cln']).values
+                
                 if 'GES_dato_variable_27' in m_camps.columns:
                     b27 = m_camps['GES_dato_variable_27'].fillna('').astype(str).values
                     fm = cdt.dt.strftime('%m%Y').fillna('').values
                     res['GES_dato_variable_27'] = [v.replace('MMYYYY', f) if 'MMYYYY' in v else v for v, f in zip(b27, fm)]
 
-            # PASO 5: Formatos Finales (Mayúsculas y NomPropio)
-            status.markdown("**95%** - Generando reporte final..."); bar.progress(95)
+            # PASO 5: Formatos Finales
+            status.markdown("**95%** - Generando reporte..."); bar.progress(95)
             es_vta = res['GES_descripcion_3'].fillna('').astype(str).str.upper().str.strip().str.startswith('VENTA')
             res['GES_dato_variable_05'], res['GES_dato_variable_26'], res['GES_dato_variable_19'] = "", "", ""
             if 'BI' in df_input.columns: res.loc[es_vta, 'GES_dato_variable_05'] = df_input.loc[es_vta, 'BI']
@@ -181,13 +180,13 @@ if file:
                     st.altair_chart((b4.mark_bar(color="#2ca02c", cornerRadiusTopRight=4, cornerRadiusBottomRight=4) + b4.mark_text(align='left', dx=3, fontWeight='bold').encode(text='E%:Q')).properties(height=max(250, len(efa)*20)), use_container_width=True)
             else: st.info("No se registraron ventas reales para generar gráficos.")
             
-            # GENERACIÓN DE EXCEL
+            # EXCEL CALIBRI 9
             out = BytesIO()
             with pd.ExcelWriter(out, engine='openpyxl') as w:
                 res.to_excel(w, index=False, sheet_name='Resultante BCI')
                 for r in w.sheets['Resultante BCI'].iter_rows():
                     for c in r: c.font = Font(name='Calibri', size=9)
             st.markdown("---")
-            st.download_button("📥 DESCARGAR REPORTE RECAALL ORDENADO", data=out.getvalue(), file_name="RECAALL_BCI_FINAL.xlsx")
+            st.download_button("📥 DESCARGAR REPORTE RECAALL FINAL", data=out.getvalue(), file_name="RECAALL_BCI_FINAL.xlsx")
 
-    except Exception as e: st.error(f"Error técnico durante el proceso: {e}")
+    except Exception as e: st.error(f"Error técnico: {e}")
