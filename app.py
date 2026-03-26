@@ -44,7 +44,7 @@ def load_masters():
             try:
                 path = f + ext
                 if ext == '.csv': 
-                    data = pd.read_csv(path, sep=None, engine='python', encoding='latin1')
+                    data = pd.read_csv(path, sep=None, engine='python', encoding='latin1', on_bad_lines='skip')
                 else: 
                     data = pd.read_excel(path)
                 data.columns = data.columns.str.strip()
@@ -73,13 +73,16 @@ with col1:
     else: st.error("❌ Campañas no detectadas")
 
 with col2:
-    # Acepta .txt, .csv y .xlsx
-    file = st.file_uploader("📥 Subir reporte Vicidial", type=["xlsx", "csv", "txt"])
+    file = st.file_uploader("📥 Subir reporte Vicidial (Excel, CSV o TXT)", type=["xlsx", "csv", "txt"])
 
 if file:
     try:
-        if file.name.endswith('xlsx'): df_input = pd.read_excel(file)
-        else: df_input = pd.read_csv(file, sep=None, engine='python', encoding='latin1')
+        if file.name.endswith('xlsx'): 
+            df_input = pd.read_excel(file)
+        else: 
+            # FIX: on_bad_lines='skip' evita que el programa se caiga por filas con errores
+            df_input = pd.read_csv(file, sep=None, engine='python', encoding='latin1', on_bad_lines='skip')
+        
         df_input.columns = df_input.columns.str.strip()
         st.info(f"📋 Registros cargados: {len(df_input)}")
         
@@ -96,7 +99,6 @@ if file:
             res['GES_ani'] = df_input.get('phone_number_dialed', '')
             res['GES_id_cliente'] = df_input.get('vendor_lead_code', pd.Series(dtype=str)).apply(limpiar_rut)
             
-            # Tiempos y Nombres
             fn = df_input.get('first_name', pd.Series(dtype=str)).astype(str).replace('nan', '')
             ln = df_input.get('last_name', pd.Series(dtype=str)).astype(str).replace('nan', '')
             res['GES_nombre_cliente'] = (fn + " " + ln).str.strip()
@@ -158,15 +160,16 @@ if file:
                     st.altair_chart((ch1.mark_bar(color="#FF9800", cornerRadiusTopLeft=4, cornerRadiusTopRight=4).encode(y='V:Q') + ch1.mark_text(align='center', baseline='line-top', dy=-15, fontWeight='bold').encode(text='V:Q', y='V:Q')).properties(height=250), use_container_width=True)
                 with c2:
                     st.write("**Ventas por Hora**")
-                    dv['H'] = dv['GES_hora_min_creacion'].str.split(':').str[0].astype(int)
-                    ch = dv.groupby('H').size().reset_index(name='V').sort_values('H')
+                    dv_h = dv.copy()
+                    dv_h['H'] = dv_h['GES_hora_min_creacion'].str.split(':').str[0].astype(int)
+                    ch = dv_h.groupby('H').size().reset_index(name='V').sort_values('H')
                     ch2 = alt.Chart(ch).encode(x='H:O')
                     st.altair_chart((ch2.mark_bar(color="#003366", cornerRadiusTopLeft=4, cornerRadiusTopRight=4).encode(y='V:Q') + ch2.mark_text(align='center', baseline='line-top', dy=-15, fontWeight='bold').encode(text='V:Q', y='V:Q')).properties(height=250), use_container_width=True)
                 
                 c3, c4 = st.columns(2)
                 with c3:
                     st.write("**Ventas Hora/Campaña**")
-                    chc = dv.groupby(['H', 'GES_nombre_campana_gestion']).size().reset_index(name='V')
+                    chc = dv_h.groupby(['H', 'GES_nombre_campana_gestion']).size().reset_index(name='V')
                     st.altair_chart(alt.Chart(chc).mark_bar().encode(x='H:O', y='V:Q', color='GES_nombre_campana_gestion:N').properties(height=300), use_container_width=True)
                 with c4:
                     st.write("**Efectividad por Ejecutivo (%)**")
@@ -185,6 +188,7 @@ if file:
                 res.to_excel(w, index=False, sheet_name='BCI')
                 for r in w.sheets['BCI'].iter_rows():
                     for c in r: c.font = Font(name='Calibri', size=9)
+            st.markdown("---")
             st.download_button("📥 DESCARGAR RESULTANTE", data=out.getvalue(), file_name="RECAALL_BCI.xlsx")
 
     except Exception as e: st.error(f"Error: {e}")
